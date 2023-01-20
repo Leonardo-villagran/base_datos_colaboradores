@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.labelColaborador{
+  font-weight: bold;
+}
+.textoHeader{
+  font-weight: bold;
+  font-size: 22px;
+}
+.buscador{
+  width: 300px;
+  height: 30px;
+}
+table th, td {
+  text-align: center;
+}
+#nombre, #email, #buscador{
+  font-size: 13px;
+}
+.muteado{
+  font-size: 13px;
+}
