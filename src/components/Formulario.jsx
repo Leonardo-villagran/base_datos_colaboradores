@@ -1,105 +1,121 @@
+//components/Formulario.jsx
+//Importación de liberías requeridas
 import { useState } from "react"
 import Badge from 'react-bootstrap/Badge';
 import Alert from 'react-bootstrap/Alert';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+//Importación de base de colaboradores en formato Json
 import { BaseColaboradores } from "../BaseColaboradores"
 
 const Formulario = () => {
+
+    //Definición de constantes de títulos 
     const nombreFooter = "@Leonardo-Villagrán" ;
     const emailFooter ="mailto:leonardovillagran@yahoo.com";
     const titulo ="Buscador de Colaboradores";
     const [buscarTarea, setBuscarTarea] = useState("")
-    let[i, setI] = useState(1)
+    
+    //Definición de estados (hooks)
     const [nombreTarea, setNombreTarea] = useState("")
     const [emailTarea, setEmailTarea] = useState("")
     let [listaTareas, setListaTareas] = useState(BaseColaboradores)
     const [mostrar, setMostrar] = useState(false);
     const [alertType, setAlertType] = useState("success");
     const [alertMessage, setAlertMessage] = useState("");
+
     // Función al enviar el formulario
     const enviarFormulario = (e) => {
-        setI(1);
         e.preventDefault()
+
+        //En caso de que el nombre y el email estén vacíos no almacenar
         if (nombreTarea === "" || emailTarea === "") {
-            console.log(nombreTarea, emailTarea);
+            //console.log(nombreTarea, emailTarea);
             setMostrar(true)
             setAlertType("danger");
             setAlertMessage("No dejar espacios en blanco.");
+            //Limpiar los input de datos ya procesados.
             setNombreTarea(""); 
             setEmailTarea("");
             return false;
         }
 
+        //Si la base está vacía, agregar datos como primer objeto con id 1
         if (listaTareas.length === 0) {
             setListaTareas([...listaTareas, {
                 id: "1",
                 nombre: nombreTarea,
-                email: emailTarea
+                correo: emailTarea
             }])
-            console.log(listaTareas);
+            //console.log(listaTareas);
             setMostrar(true)
             setAlertType("primary");
             setAlertMessage("Datos ingresados correctamente.");
+            //Limpiar los input de datos ya procesados.
             setNombreTarea(""); 
             setEmailTarea("");
             return true;
         }
         else {
+
+            //Ordenar por id y obtener el último id, para generar el nuevo objeto con id+1  
             setBuscarTarea("");
             listaTareas = listaTareas.sort((a, b) => a.id - b.id);
             let ultimo = listaTareas[listaTareas.length - 1]
             let id_ultimo = Number(ultimo.id) + 1;
             let id_str = id_ultimo.toString();
-            console.log(id_str);
+            //console.log(id_str);
             setListaTareas([...listaTareas, {
                 id: id_str,
                 nombre: nombreTarea,
-                email: emailTarea
+                correo: emailTarea
             }])
-            console.log(listaTareas);
+            //console.log(listaTareas);
             setMostrar(true)
             setAlertType("primary");
             setAlertMessage("Datos ingresados correctamente.");
+            //Limpiar los input de datos ya procesados.
             setNombreTarea(""); 
             setEmailTarea("");
             return true;
         }
     }
-    //Función al escribir sobre el input del formulario
+    //Función para capturar los datos desde el input de nombre
     const capturaNombre = (e) => {
         setNombreTarea(e.target.value)
     }
+    //Función para capturar los datos desde el input de email
     const capturaEmail = (e) => {
         setEmailTarea(e.target.value)
     }
+    //Función para capturar los datos desde el input de buscador
     const capturaBuscar = (e) => {
         setBuscarTarea(e.target.value)
         setMostrar(false)
         setAlertType("");
         setAlertMessage("");
     }
+    //Función para eliminar objeto de la lista de datos por id
     const eliminarTarea = (el) => {
         const listaFiltrada = listaTareas.filter((tarea) => el.id !== tarea.id)
         setListaTareas(listaFiltrada)
         setMostrar(true)
         setAlertType("warning");
         setAlertMessage("Datos borrados correctamente. ");
+        //Limpiar los input de datos ya procesados.
         setNombreTarea(""); 
         setEmailTarea("");
 
     }
+    //Función para obtener listado de datos filtrados desde el input de llamado buscador
     const filtrados = listaTareas.filter((tarea) => {
-
         if (tarea.nombre.toUpperCase().includes(buscarTarea.toUpperCase())) {
-
             return true;
-
         }
-
         return false;
-
     });
 
+    //Función que se utiliza para activar el botón de submit en caso de que el nombre y el email no sean vacíos
     const activarBoton = () => {
         if (nombreTarea !== "" && emailTarea !== "") {
             return (
@@ -118,7 +134,6 @@ const Formulario = () => {
         }
     }
     
-
     return (
         <div className="w-100">
             <div className="w-100 bg-dark d-flex justify-content-between p-2">
@@ -142,20 +157,20 @@ const Formulario = () => {
             <hr />
             <h1>Listado de colaboradores</h1>
             <table className="table table-striped table-bordered table-hover">
-                <tbody key={i}>
-                    <tr className="bg-dark" key={i=i+1}><th className="text-light" scope="col">Nombre</th ><th className="text-light" scope="col">Email</th><th className="text-light" scope="col">Borrar</th></tr>
+                <tbody>
+                    <tr className="bg-dark"><th className="text-light" scope="col">Nombre</th ><th className="text-light" scope="col">Email</th><th className="text-light" scope="col">Borrar</th></tr>
                     {(buscarTarea === "") ? listaTareas.map((tarea, index) =>
-                        <tr  key={i=i+1}>
+                        <tr  key={index}>
                             <td>{tarea.nombre} </td>
-                            <td> {tarea.email} </td>
-                            <td><button className="btn btn-warning" onClick={() => eliminarTarea(tarea)}> Borrar</button></td>
+                            <td> {tarea.correo} </td>
+                            <td><button className="btn btn-danger" onClick={() => eliminarTarea(tarea)}> Borrar</button></td>
                         </tr>
                     )
                         :
                         filtrados.map((tarea, index) =>
-                            <tr  key={i=i+1}>
+                            <tr  key={index}>
                                 <td >{tarea.nombre} </td>
-                                <td> {tarea.email} </td>
+                                <td> {tarea.correo} </td>
                                 <td><button className="btn btn-danger" onClick={() => eliminarTarea(tarea)}> Borrar</button>
                                 </td>
                             </tr>
