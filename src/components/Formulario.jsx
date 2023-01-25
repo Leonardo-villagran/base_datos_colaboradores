@@ -5,7 +5,7 @@ import Badge from 'react-bootstrap/Badge';
 import Alert from 'react-bootstrap/Alert';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-//Importación de base de colaboradores en formato Json
+//Importación de base de colaboradores desde BaseColaboradores.js
 import { BaseColaboradores } from "../BaseColaboradores"
 
 const Formulario = () => {
@@ -14,9 +14,9 @@ const Formulario = () => {
     const nombreFooter = "@Leonardo-Villagrán" ;
     const emailFooter ="mailto:leonardovillagran@yahoo.com";
     const titulo ="Buscador de Colaboradores";
-    const [buscarTarea, setBuscarTarea] = useState("")
     
     //Definición de estados (hooks)
+    const [buscarTarea, setBuscarTarea] = useState("")
     const [nombreTarea, setNombreTarea] = useState("")
     const [emailTarea, setEmailTarea] = useState("")
     let [listaTareas, setListaTareas] = useState(BaseColaboradores)
@@ -107,8 +107,10 @@ const Formulario = () => {
         setEmailTarea("");
 
     }
-    //Función para obtener listado de datos filtrados desde el input de llamado buscador
+    //Función para obtener listado de datos filtrados desde el input llamado buscador. 
     const filtrados = listaTareas.filter((tarea) => {
+
+        //Transforma los strings a mayúsculas para realizar la búsqueda (para evitar errores)
         if (tarea.nombre.toUpperCase().includes(buscarTarea.toUpperCase())) {
             return true;
         }
@@ -120,7 +122,7 @@ const Formulario = () => {
         if (nombreTarea !== "" && emailTarea !== "") {
             return (
                 <div className="d-flex align-items-center">
-                <button className="btn btn-primary m-3">Agregar colaborador</button><p className="muteado text-muted  mt-3">Botón activado.</p>
+                <button className="btn btn-primary m-3">Agregar colaborador</button><p className="muteado text-muted  mt-3">Botón activado</p>
                 </div>
             )
         }
@@ -132,6 +134,17 @@ const Formulario = () => {
             )
             
         }
+    }
+    //Función que imprime filas de datos en una tabla
+    const ImprimirListado=(lista) => {
+        const listado=lista.map((tarea, index) =>
+            <tr key={index}>
+                <td>{tarea.nombre} </td>
+                <td> {tarea.correo} </td>
+                <td><button className="btn btn-danger" onClick={() => eliminarTarea(tarea)}> Borrar</button></td>
+            </tr>
+            )
+        return listado;   
     }
     
     return (
@@ -159,23 +172,7 @@ const Formulario = () => {
             <table className="table table-striped table-bordered table-hover">
                 <tbody>
                     <tr className="bg-dark"><th className="text-light" scope="col">Nombre</th ><th className="text-light" scope="col">Email</th><th className="text-light" scope="col">Borrar</th></tr>
-                    {(buscarTarea === "") ? listaTareas.map((tarea, index) =>
-                        <tr  key={index}>
-                            <td>{tarea.nombre} </td>
-                            <td> {tarea.correo} </td>
-                            <td><button className="btn btn-danger" onClick={() => eliminarTarea(tarea)}> Borrar</button></td>
-                        </tr>
-                    )
-                        :
-                        filtrados.map((tarea, index) =>
-                            <tr  key={index}>
-                                <td >{tarea.nombre} </td>
-                                <td> {tarea.correo} </td>
-                                <td><button className="btn btn-danger" onClick={() => eliminarTarea(tarea)}> Borrar</button>
-                                </td>
-                            </tr>
-                        )
-                    }
+                    {(buscarTarea === "") ? ImprimirListado(listaTareas) : ImprimirListado(filtrados)}
                 </tbody>
             </table>
             <div className='p-2 text-center'>

@@ -1,4 +1,5 @@
 // src/BaseColaboradores.js
+//Base de datos iniciales dentro de la lista a mostrar
 export const BaseColaboradores = [
     {
     id: "1",
